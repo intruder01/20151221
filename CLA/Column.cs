@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.IO;
 using MathNet.Numerics.Distributions;
 using OpenHTM.CLA.Extensions;
 using OpenHTM.CLA.Statistics;
@@ -254,25 +255,20 @@ namespace OpenHTM.CLA
 
 			// Proximal synapses per Column (input segment)
 			// TODO: give user some control over the number of synapses per segment
-			var synapsesPerSegment =
-				(int) (inputArea * this.Region.PercentageInputPerColumn);
+			//var synapsesPerSegment =
 
 			//debug js
-			if (synapsesPerSegment <= 0)
-			{
-				synapsesPerSegment = 2;
-			}
-
+			//	(int) (inputArea * this.Region.PercentageInputPerColumn);
+			var synapsesPerSegment = Math.Max(1, 
+				(int)(inputArea * this.Region.PercentageInputPerColumn));
+			
 			// Updates minimum overlap value, i.e. the minimum number of inputs that must 
 			// be active for a column to be considered during the inhibition step.
-			this.MinOverlap =
-				(int) Math.Round(synapsesPerSegment * this.Region.PercentageMinOverlap);
-
-			// Overlap must be at least 1
-			if (this.MinOverlap <= 0)
-			{
-				this.MinOverlap = 1;
-			}
+			//debug js
+			//this.MinOverlap =
+			//	(int) Math.Round(synapsesPerSegment * this.Region.PercentageMinOverlap);
+			this.MinOverlap = Math.Max(1,
+				(int)Math.Round ( synapsesPerSegment * this.Region.PercentageMinOverlap ));
 
 			// Create all possible x,y positions for this column input space
 			var inputPositions = new List<Point>();
@@ -294,9 +290,15 @@ namespace OpenHTM.CLA
 			// Initialize the gaussian normal distribution
 			// The values are chosen to be in a small range around connectedPerm
 			// (the minimum permanence value at which a synapse is considered "connected")
+			
+			//var gausianNormalDistribution =
+			//	new Normal(Synapse.InitialPermanence, Synapse.PermanenceIncrement);
+			//gausianNormalDistribution.RandomSource = new Random(randomSeed);
+
+			// JS
 			var gausianNormalDistribution =
-				new Normal(Synapse.InitialPermanence, Synapse.PermanenceIncrement);
-			gausianNormalDistribution.RandomSource = new Random(randomSeed);
+				new Normal ( Synapse.ConnectedPermanence, Synapse.PermanenceIncrement );
+			gausianNormalDistribution.RandomSource = new Random ( randomSeed );
 
 			// Create proximal synapses to ramdom positions in input
 			int longerSide = Math.Max(this.Region.InputSize.Width, this.Region.InputSize.Height);
@@ -330,7 +332,25 @@ namespace OpenHTM.CLA
 					double localityBias = radiusBiasPeak / 2.0f *
 					                      Math.Exp(Math.Pow(distanceToInput /
 					                                        (longerSide * radiusBiasStandardDeviation), 2) / -2);
-					double permanenceBias = Math.Min(1.0f, permanence * localityBias);
+
+					StreamWriter file = new StreamWriter ( "localityBias.txt", false );
+					
+					for (float longSide = 0.1f; longSide < 2.0f; longSide += 0.1f)
+					{
+						file.WriteLine ( "RadiusBiasPeak,distToInput,longerSide,SD,localityBias" );
+						for (float distToInput = 0.0f; distToInput < 2.0f; distToInput += 0.1f)
+						{
+							localityBias = radiusBiasPeak / 2.0f *
+											  Math.Exp ( Math.Pow ( distToInput /
+																(longSide * radiusBiasStandardDeviation), 2 ) / -2 );
+							file.WriteLine ( String.Format ( "{0},{1},{2},{3},{4}", radiusBiasPeak, distToInput, longSide, radiusBiasStandardDeviation, localityBias ) );
+						}
+					}
+					file.Close ();
+
+					// JS
+					//double permanenceBias = Math.Min(1.0f, permanence * localityBias);
+					double permanenceBias = Math.Min ( 1.0f, permanence + localityBias );
 
 					// Create new synapse and add it to segment
 					this.ProximalSegment.CreateSynapse(newInputCell, permanenceBias);

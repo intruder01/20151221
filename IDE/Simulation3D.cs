@@ -5,7 +5,8 @@ using Microsoft.Xna.Framework;
 
 namespace OpenHTM.IDE
 {
-	public delegate void SimEngineStarted (object sender, EventArgs e);
+	public delegate void SimEngineStarted_Event (object sender, EventArgs e);
+	public delegate void SimEngineShutdown_Event ( object sender, EventArgs e );
 
 	/// <summary>
 	/// This is the main class for start the 3D visualization
@@ -16,7 +17,8 @@ namespace OpenHTM.IDE
 		//public static EventHandler<EventArgs> SimEngineStarted;
 
 
-		public static event SimEngineStarted EngineStarted = delegate { };
+		public static event SimEngineStarted_Event EngineStarted = delegate { };
+		public static event SimEngineShutdown_Event EngineShutdown = delegate { };
 
 		#region Fields
 
@@ -61,6 +63,8 @@ namespace OpenHTM.IDE
 		/// </summary>          
 		public static void End()
 		{
+			EngineShutdown ( Engine, EventArgs.Empty );
+
 			if (_thread != null)
 			{
 				_thread.Abort();

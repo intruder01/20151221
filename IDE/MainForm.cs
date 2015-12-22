@@ -321,7 +321,8 @@ namespace OpenHTM.IDE
 						Properties.Settings.Default.LastProjectPath = Project.ProjectFolderPath;
 
 						// JS - Initialize network right away
-						//buttonInitHTM_Click( sender, e);
+						buttonInitHTM_Click( sender, e);
+						buttonStepHTM_Click ( sender, e );
 
 					}
 					catch (Exception ex)
@@ -390,9 +391,10 @@ namespace OpenHTM.IDE
 					Properties.Settings.Default.LastProjectPath = Project.ProjectFolderPath;
 
 					// JS - Initialize network right away
-					//buttonInitHTM_Click ( sender, e );
+					buttonInitHTM_Click ( sender, e );
+					buttonStepHTM_Click ( sender, e );
 
-					StateInformationPanel.StateInformationPanel_StatePanelSelectionChanged += WatchForm.Instance.Handler_StateInfoPanelSelectionChanged;
+					StateInformationPanel.StateInformationPanel_SelectionChanged += WatchForm.Instance.Handler_StateInfoPanelSelectionChanged;
 
 				}
 				catch (Exception ex)
@@ -490,8 +492,9 @@ namespace OpenHTM.IDE
 			//this doesnt work - Engine is null at this point
 			//Simulation3D.Engine.SelectionChangedEvent += WatchGridForm.SimSelectionChanged_Handler;
 
-			//wire event waiting for Engine created
+			//wire Engine events
 			Simulation3D.EngineStarted += WatchForm.Instance.Handler_SimEngineStarted;
+			Simulation3D.EngineShutdown += WatchForm.Instance.Handler_SimEngineShutdown;
 		}
 
 		private void menuViewStateInformation_Click(object sender, EventArgs e)

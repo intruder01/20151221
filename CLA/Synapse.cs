@@ -49,7 +49,7 @@ namespace OpenHTM.CLA
 		/// </summary>
 		public Synapse()
 		{
-			ConnectedPermanence = 0.2f;
+			ConnectedPermanence = 0.5f;
 			InitialPermanence = ConnectedPermanence + 0.1f;
 			PermanenceDecrement = 0.01f;
 			PermanenceIncrement = 0.015f;

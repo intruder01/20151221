@@ -13,17 +13,20 @@ using Region = OpenHTM.CLA.Region;
 
 namespace OpenHTM.IDE
 {
+	// when selection changes, broadcast new selection to 
+	// StateInformationPanel and Simulation3D so that current selection is
+	// always synchronised
+	public delegate void WatchFormSelectionSynch_Event (object sender, EventArgs e);
+
 	public partial class WatchForm : DockContent
 	{
+		public static event WatchFormSelectionSynch_Event WatchFormSelectionSynch = delegate { };
+
 		#region Fields
 
 		// Private singleton instance
 		private static WatchForm _instance;
 
-		private List<Cell> WatchListCells;
-		private List<DistalSynapse> WatchListDistal;
-		private List<ProximalSynapse> WatchListProximal;
-		//private DataSet ds;
 
 		#endregion
 
@@ -64,10 +67,6 @@ namespace OpenHTM.IDE
 
 			// Set UI properties
 			this.MdiParent = MainForm.Instance;
-
-			WatchListCells = new List<Cell> ();
-			WatchListDistal = new List<DistalSynapse> ();
-			WatchListProximal = new List<ProximalSynapse> ();
 		}
 
 		#endregion
@@ -93,94 +92,44 @@ namespace OpenHTM.IDE
 		public void Handler_SimEngineStarted ( object sender, EventArgs e )
 		{
 			Simulation3DEngine engine = (Simulation3DEngine)sender;
-			//subscribe to Engine objectSelectionChanged event 
+			//subscribe to Engine SelectionChanged event 
 			engine.SelectionChangedEvent += Handler_SimSelectionChanged;
 		}
+		//wait for Engine shutdown
+		public void Handler_SimEngineShutdown ( object sender, EventArgs e )
+		{
+			Simulation3DEngine engine = (Simulation3DEngine)sender;
+			//un-subscribe from Engine SelectionChanged event 
+			engine.SelectionChangedEvent -= Handler_SimSelectionChanged;
+		}
 
-		//
 		/// <summary>
 		/// Event handler. Handles Watch selection change notifications.
 		/// </summary>
 		/// <param name="sender">List of Selectable3DObject - WatchList from Simulation3DEngine
 		/// TEST: entire network passed by NetControllerForm.Instance.TopNode.Region</param>
 		/// <param name="e"></param>
-		public void Handler_SimSelectionChanged ( object sender, EventArgs e )
+		public void Handler_SimSelectionChanged ( object sender, EventArgs e, object region )
 		{
-			//List<Selectable3DObject> WatchList = (List<Selectable3DObject>) sender;
-			//Instance.RebuildWatchLists ( WatchList );
-			//ds = Instance.WatchListCellsToDataSet ();
-			SetPropertyGridDataSource ( (Region)sender );
+			SetPropertyGridDataSource ( region );
 		}
 
 
-		public void Handler_StateInfoPanelSelectionChanged ( object sender, EventArgs e )
+		public void Handler_StateInfoPanelSelectionChanged ( object sender, EventArgs e, object selectedEntities )
 		{
-			//List<Selectable3DObject> WatchList = (List<Selectable3DObject>) sender;
-			//Instance.RebuildWatchLists ( WatchList );
-			//ds = Instance.WatchListCellsToDataSet ();
-			SetPropertyGridDataSource ( (Region)sender );
-
+			SetPropertyGridDataSource ( selectedEntities );
 		}
-		/// <summary>
-		/// Rebuilds current Watch structure for watchPropertyGrid
-		/// from generic list of Selectable3DObjects from 3DEngine.
-		/// </summary>
-		/// <param name="watchList"></param>
-		public void RebuildWatchLists ( List<Selectable3DObject> watchList ) 
-		{
-			bool add = true;
-			Cell cell = null;
-			DistalSynapse distal = null;
-			ProximalSynapse proximal = null;
-
-			WatchListCells.Clear ();
-			WatchListDistal.Clear ();
-			WatchListProximal.Clear ();
-
-			foreach (var obj in watchList)
-			{
-				if (obj != null)
-				{
-					switch (obj.SelectablelType)
-					{
-						case SelectableObjectType.Cell:
-							cell = (Cell)obj;
-							if (add == true)
-								WatchListCells.Add ( cell );
-							else
-								WatchListCells.Remove ( cell );
-							break;
-						case SelectableObjectType.DistalSynapse:
-							distal = (DistalSynapse)obj;
-							if (add == true)
-								WatchListDistal.Add ( distal );
-							else
-								WatchListDistal.Remove ( distal );
-							break;
-						case SelectableObjectType.ProximalSynapse:
-							proximal = (ProximalSynapse)obj;
-							if (add == true)
-								WatchListProximal.Add ( proximal );
-							else
-								WatchListProximal.Remove ( proximal );
-							break;
-						case SelectableObjectType.None:
-						default:
-							break;
-
-					}
-				}
-			}
-		}
+	
+	
 		#endregion
 
 
 
 		//Thread safe way of setting the datasource
 		//in WatchGrid
-		delegate void SetPropertyGridDatasource ( Region region ); 
+		delegate void SetPropertyGridDatasource ( object region ); 
 
-		private void SetPropertyGridDataSource ( Region region )
+		private void SetPropertyGridDataSource ( object region )
 		{
 			// InvokeRequired required compares the thread ID of the 
 			// calling thread to the thread ID of the creating thread. 

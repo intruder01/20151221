@@ -12,11 +12,13 @@ using Region = OpenHTM.CLA.Region;
 
 namespace OpenHTM.IDE
 {
-	public delegate void StateInformationSelectionChanged(object sender, EventArgs e);
+	// notify listeners of selection changes 
+	public delegate void StateInformationPanelSelectionChanged_Event(object sender, EventArgs e, object obj);
 
 	public class StateInformationPanel : Panel
 	{
-		public static event StateInformationSelectionChanged StateInformationPanel_StatePanelSelectionChanged = delegate { };
+
+		public static event StateInformationPanelSelectionChanged_Event StateInformationPanel_SelectionChanged = delegate { };
 
 		#region Fields
 
@@ -881,7 +883,7 @@ namespace OpenHTM.IDE
 									   cellPointVirtual, cellSizeVirtual,
 									   Color.Black);
 
-				// Does the mouse hovers over the cell? let's check.
+				// Does the mouse hover over the cell? let's check.
 				if (this._keyControlIsPressed)
 				{
 					if ((this._relativeMouseLocationInVirtualWorld.X >= cellPointVirtual.X) &&
@@ -1071,7 +1073,7 @@ namespace OpenHTM.IDE
 			}
 		}
 
-		public List<Cell> ExpandEntitiesIntoListOfCells(object entity)
+		public List<Cell> ExpandEntityIntoListOfCells(object entity)
 		{
 			// Expand the selected entity into a group of cells.
 			var selectedCells = new List<Cell>();
@@ -1079,13 +1081,14 @@ namespace OpenHTM.IDE
 			{
 				foreach (var cell in ((Column)entity).Cells)
 				{
-					selectedCells.Add(cell);
+					selectedCells.Add ( cell );
 				}
 			}
 			if (entity is Cell)
 			{
-				selectedCells.Add((Cell)entity);
+				selectedCells.Add ( (Cell)entity );
 			}
+
 
 			return selectedCells;
 		}
@@ -1098,7 +1101,7 @@ namespace OpenHTM.IDE
 
 			foreach (var entity in this._selectedEntities)
 			{
-				List<Cell> selectedCells = this.ExpandEntitiesIntoListOfCells(entity);
+				List<Cell> selectedCells = this.ExpandEntityIntoListOfCells(entity);
 				// First, highlight the cells and the columns.
 				bool highlightedTheColumn = false;
 				foreach (var cell in selectedCells)
@@ -1124,7 +1127,7 @@ namespace OpenHTM.IDE
 
 			foreach (var entity in this._selectedEntities)
 			{
-				List<Cell> selectedCells = this.ExpandEntitiesIntoListOfCells(entity);
+				List<Cell> selectedCells = this.ExpandEntityIntoListOfCells(entity);
 				float maxPermanenceForRegion =
 					this.GetMaxPermanenceForRegion();
 
@@ -1898,7 +1901,7 @@ namespace OpenHTM.IDE
 			// Do we hover on something and pressing control? if yes, then add it
 			// To the list of entities selected.
 			if ((e.Button == MouseButtons.Left) &&
-				this._keyControlIsPressed)
+				this._keyControlIsPressed) 
 			{
 				if (this._mouseHoversEntity != null)
 				{
@@ -1906,10 +1909,9 @@ namespace OpenHTM.IDE
 					if (this._selectedEntities.Contains ( this._mouseHoversEntity ) == false)
 					{
 						this._selectedEntities.Add ( this._mouseHoversEntity );
-						List<Cell> selectedCells = this.ExpandEntitiesIntoListOfCells ( this._selectedEntities );
-						//for now just pass the Region
-						if (selectedCells.Count > 0)
-							StateInformationPanel_StatePanelSelectionChanged ( selectedCells[0].Column.Region, e );
+						//List<Cell> selectedCells = this.ExpandEntityIntoListOfCells ( this._selectedEntities[0] );
+						//if (selectedCells.Count > 0)
+							StateInformationPanel_SelectionChanged ( this, e, _selectedEntities );
 					}
 				}
 			}
@@ -1918,10 +1920,7 @@ namespace OpenHTM.IDE
 			if (e.Button == MouseButtons.Right)
 			{
 				this._selectedEntities.Clear ();
-				List<Cell> selectedCells = this.ExpandEntitiesIntoListOfCells ( this._selectedEntities );
-				//for now just pass the Region
-				if(selectedCells.Count > 0)
-					StateInformationPanel_StatePanelSelectionChanged ( selectedCells[0].Column.Region, e );
+				StateInformationPanel_SelectionChanged ( this, e, _selectedEntities );
 			}
 
 			this.Display ();

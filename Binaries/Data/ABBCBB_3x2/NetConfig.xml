@@ -32,8 +32,8 @@
     <LocalityRadius>0</LocalityRadius>
   </TopRegionParams>
   <SynapseParams>
-    <InitialPermanence>0.22</InitialPermanence>
-    <ConnectedPermanence>0.2</ConnectedPermanence>
+    <InitialPermanence>0.52</InitialPermanence>
+    <ConnectedPermanence>0.5</ConnectedPermanence>
     <PermanenceIncrease>0.015</PermanenceIncrease>
     <PermanenceDecrease>0.015</PermanenceDecrease>
   </SynapseParams>

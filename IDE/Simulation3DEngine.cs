@@ -14,7 +14,7 @@ using OpenHTM.CLA.Statistics;
 namespace OpenHTM.IDE
 {
 
-	public delegate void SimEngineEvent_ObjectSelectionChanged ( object sender, EventArgs e );
+	public delegate void SimEngineSelectionChanged_Event ( object sender, EventArgs e, object obj );
 	
 	/// <summary>
 	/// A delegate type for hooking up change notifications.
@@ -25,7 +25,7 @@ namespace OpenHTM.IDE
 	/// </summary>
 	internal class Simulation3DEngine : Game
 	{
-		public event SimEngineEvent_ObjectSelectionChanged SelectionChangedEvent = delegate { };
+		public event SimEngineSelectionChanged_Event SelectionChangedEvent = delegate { };
 		
 
 
@@ -944,8 +944,11 @@ namespace OpenHTM.IDE
 					Ray ray = getPickingRay ( new System.Drawing.Point ( 331, 301 ) );
 
 					PickHtmRegion ( ray, true );
-					//WatchTreeForm.Instance.Handler_SimSelectionChanged ( WatchList, EventArgs.Empty );here
-					WatchForm.Instance.Handler_SimSelectionChanged ( NetControllerForm.Instance.TopNode.Region, EventArgs.Empty );
+
+					//WatchForm.Instance.Handler_SimSelectionChanged ( this, EventArgs.Empty, NetControllerForm.Instance.TopNode.Region );
+					
+					// broadcast selection change (send Region as obj)
+					SelectionChangedEvent ( this, EventArgs.Empty, NetControllerForm.Instance.TopNode.Region );
 				}
 			}
 		}
@@ -2270,7 +2273,7 @@ namespace OpenHTM.IDE
 
 			//trigger SelectionChangedEvent
 			//SelectionChangedEvent ( WatchList, EventArgs.Empty );
-			SelectionChangedEvent ( NetControllerForm.Instance.TopNode.Region, EventArgs.Empty );
+			SelectionChangedEvent ( this, EventArgs.Empty, NetControllerForm.Instance.TopNode.Region );
 		}
 
 
