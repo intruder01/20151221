@@ -1,0 +1,17 @@
+# All files in Bin and Obj folders and its subfolders
+obj/
+bin/
+Binaries/*
+!Binaries/Data
+
+# All AssemblyInfo (including GlobalAssemblyInfo) files
+#*AssemblyInfo.cs
+
+# All cache and other files
+*.suo
+*.user
+*.cache
+
+# ReShaper files
+_ReSharper*/
+*.csproj.DotSettings

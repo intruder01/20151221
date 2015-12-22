@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<NetConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TopRegionParams>
+    <Children>
+      <NodeParams xsi:type="FileSensorParams">
+        <Children />
+        <Type>FileSensor</Type>
+        <Name>Sensor</Name>
+        <Size>
+          <Width>20</Width>
+          <Height>20</Height>
+        </Size>
+        <FileName>input.txt</FileName>
+      </NodeParams>
+    </Children>
+    <Type>Region</Type>
+    <Name>Top Region</Name>
+    <Size>
+      <Width>150</Width>
+      <Height>150</Height>
+    </Size>
+    <InputSize>
+      <Width>20</Width>
+      <Height>20</Height>
+    </InputSize>
+    <SegmentActivateThreshold>4</SegmentActivateThreshold>
+    <NewNumberSynapses>5</NewNumberSynapses>
+    <CellsPerColumn>4</CellsPerColumn>
+    <PercentageInputCol>15</PercentageInputCol>
+    <PercentageMinOverlap>10</PercentageMinOverlap>
+    <PercentageLocalActivity>20</PercentageLocalActivity>
+    <LocalityRadius>20</LocalityRadius>
+  </TopRegionParams>
+  <SynapseParams>
+    <InitialPermanence>0.22</InitialPermanence>
+    <ConnectedPermanence>0.2</ConnectedPermanence>
+    <PermanenceIncrease>0.015</PermanenceIncrease>
+    <PermanenceDecrease>0.01</PermanenceDecrease>
+  </SynapseParams>
+</NetConfig>

@@ -1,0 +1,10 @@
+We adopt the "C# Coding Conventions (C# Programming Guide)":
+http://msdn.microsoft.com/en-us/library/vstudio/ff926074.aspx
+
+Complement article:
+http://www.dofactory.com/reference/csharp-coding-standards.aspx
+
+Rules aren't in articles:
+-Use Tabs instead of spaces since tabs allow developers choose their own preferences in IDE.
+-Don't use LINQ/lambda expressions since this can sounds weird for non C# programmers.
+-Avoid abbreviations (except those well accepted like Xml, Sqrt, etc). Code with abbreviations can be changed or even rejected without previous warning.

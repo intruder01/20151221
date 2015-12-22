@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Region xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Index>0</Index>
+  <Statistics>
+    <ActivityCounter>2</ActivityCounter>
+    <ActivityPrecision>0</ActivityPrecision>
+    <ActivityRate>0.1</ActivityRate>
+    <CorrectSegmentPredictionCounter>0</CorrectSegmentPredictionCounter>
+    <CorrectPredictionCounter>0</CorrectPredictionCounter>
+    <PredictionCounter>0</PredictionCounter>
+    <PredictPrecision>0</PredictPrecision>
+    <SegmentPredictionCounter>0</SegmentPredictionCounter>
+    <StepCounter>5</StepCounter>
+    <ColumnActivationAccuracy>0</ColumnActivationAccuracy>
+    <ColumnPredictionAccuracy>0</ColumnPredictionAccuracy>
+    <NumberActiveColumns>0</NumberActiveColumns>
+  </Statistics>
+  <Size>
+    <Width>2</Width>
+    <Height>2</Height>
+  </Size>
+  <Initialized>true</Initialized>
+  <InputSize>
+    <Width>3</Width>
+    <Height>1</Height>
+  </InputSize>
+  <InputProportionX>2</InputProportionX>
+  <InputProportionY>0</InputProportionY>
+  <CellsPerColumn>4</CellsPerColumn>
+  <DesiredLocalActivity>2</DesiredLocalActivity>
+  <InhibitionRadius>0</InhibitionRadius>
+  <HardcodedSpatial>false</HardcodedSpatial>
+  <FullDefaultSpatialPermanence>false</FullDefaultSpatialPermanence>
+</Region>
